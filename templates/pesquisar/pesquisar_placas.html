@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Pesquisar - Placas
+{% endblock %}
+
+{% block content %}
+    {% include 'flash.html' %}
+    <div class="container" style="width: 70%;">
+        <button class="hidden" id="reload-table"></button>
+        <div class="div-menu">
+            <div class="btn-container">
+                <input type="radio" class="btn-check" id="btn-motoristas" name="table-select" autocomplete="off"/>
+                <label class="btn btn-secondary label-motoristas" for="btn-motoristas" style="display: flex; margin-right: 5px;" onclick="window.location = '{{ url_for('views.pesquisar_tables', table='motoristas')}}';">
+                    <span style="margin: auto;">
+                        Motoristas
+                    </span>
+                </label>
+
+                <input type="radio" class="btn-check" id="btn-placas" name="table-select" autocomplete="off" checked/>
+                <label class="btn btn-secondary label-placas" for="btn-placas" style="display: flex; margin-right: 5px;" onclick="window.location = '{{ url_for('views.pesquisar_tables', table='placas')}}';">
+                    <span style="margin: auto;">
+                        Placas
+                    </span>
+                </label>
+            </div>
+            <div class="input-group mb-3 div-cadastrar" id="cadastrarField">
+                <button class="btn btn-outline-success" id="add-placa" style="margin: auto;">Cadastrar placa</button>
+            </div>
+            <div class="div-table" id="div-table-placas">
+                <table id="table-placas" class="edit-tables" border="1" style="table-layout: auto ; width: 100%; margin-left: auto; margin-right: auto;">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Ações</th>
+                            <th>Placa</th>
+                            <th>Veículo</th>
+                            <th>Modelo</th>
+                            <th>QR Code</th>
+                            <th>Km/Lt Ideal</th>
+                            <th>Ativo?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true" style="top: 50%;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Placas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editFormPlacas" method="post" class="edit" autocomplete="off">
+                        <div class="form-group hidden">
+                            <label for="editId">ID</label>
+                            <input type="text" class="form-control" id="editId" name="id" readonly>
+                        </div>
+                        <div class="form-group" style="display: flex; margin-bottom: 0px;">
+                            <div class="form-group" style="margin-right: 5px;">
+                                <label for="editPlaca">Placa</label>
+                                <input type="text" class="form-control" id="editPlaca" name="placa" autocomplete="off" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editVeiculo">Veiculo</label>
+                                <input type="text" class="form-control" id="editVeiculo" name="veiculo" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display: flex; margin-bottom: 0px;">
+                            <div class="form-group" style="margin-right: 5px;">
+                                <label for="editModelo">Modelo</label>
+                                <input type="text" class="form-control" id="editModelo" name="modelo" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="editQrcode">QR Code</label>
+                                <div class="form-group" style="display: flex;">
+                                    <input type="text" class="form-control" id="editQrcode" name="qrcode" autocomplete="off" readonly>
+                                    <div class="form-group" id="div-qrcode" style="width: 20%; margin-left: 5px; margin-bottom: 0;">
+                                        <img src="{{ url_for('static', filename='images/qr-code.png')}}" id="icone-qr" alt="icone-qr" onclick="startQrScanner();"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display: flex; margin-bottom: 0px;">
+                            <div class="form-group" style="margin-right: 5px;">
+                                <label for="editKmideal">Km/Lt Ideal</label>
+                                <input type="text" class="form-control" id="editKmideal" name="km_ideal" pattern="[\d,.]*" inputmode="numeric" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="editAtivo">Veículo ativo?</label>
+                                <br>
+                                <input type="checkbox" id="editAtivo" name="ativo" autocomplete="off" value="1">
+                            </div>
+                        </div>
+                        <div class="form-group" style="display: flex;">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="margin-right: 5px;">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" style="top: 50%;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Excluir Registros</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="deleteFormPlacas" action="/processar_formulario" method="post" class="delete" autocomplete="off">
+                        <div class="form-group hidden">
+                            <label for="deleteId">ID</label>
+                            <input type="text" class="form-control" id="deleteId" name="id" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Tem certeza que deseja excluir este registro?</label>
+                        </div>
+                        <div class="form-group" style="display: flex;">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="margin-right: 5px;">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Sim</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/datatables/pesquisar-placas.js') }}"></script>
+{% endblock %}
+{% endblock %}

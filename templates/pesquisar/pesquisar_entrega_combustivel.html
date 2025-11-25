@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Pesquisar - Entregas
+{% endblock %}
+
+{% block content %}
+    {% include 'flash.html' %}
+    <div class="container" style="width: 100%; max-width: 10000px;">
+        <div class="div-menu">
+
+            <div class="btn-container">
+                <input type="radio" class="btn-check" id="btn-abastecimentos" name="table-select" autocomplete="off"/>
+                <label class="btn btn-secondary label-abastecimentos" for="btn-abastecimentos" style="display: flex; margin-right: 5px;" onclick="window.location = '{{ url_for('views.pesquisar_tables', table='abastecimentos')}}';">
+                    <span style="margin: auto;">
+                        Abastecimentos
+                    </span>
+                </label>
+                <input type="radio" class="btn-check" id="btn-entrega_combustivel" name="table-select" autocomplete="off" checked/>
+                <label class="btn btn-secondary label-entrega_combustivel" for="btn-entrega_combustivel" style="display: flex; margin-right: 5px;" onclick="window.location = '{{ url_for('views.pesquisar_tables', table='entrega_combustivel')}}';">
+                    <span style="margin: auto;">
+                        Entregas
+                    </span>
+                </label>
+            </div>
+
+            <div class="input-group mb-3 div-date">
+                <span class="input-group-text">De</span>
+                <input type="date" class="form-control" id="start" autocomplete="off">
+                <span class="input-group-text">até</span>
+                <input type="date" class="form-control" id="stop" autocomplete="off">
+            </div>
+
+            <div class="div-table" id="div-table-entrega_combustivel">
+                <div class="input-group mb-3 div-date">
+                    <button class="btn btn-outline-primary" id="report-button">Imprimir</button>
+                </div>
+
+                <table id="table-entrega_combustivel" border="1">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Ações</th>
+                            <th>Data</th>
+                            <th>Responsável</th>
+                            <th>Volume</th>
+                            <th>Posto</th>
+                            <th>Odômetro</th>
+                            <th>Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal de edicao -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true" style="top: 50%;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Registros</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="editFormEntregaCombustivel" method="post" class="edit" autocomplete="off">
+
+                        <div class="form-group hidden">
+                            <label for="editId">ID</label>
+                            <input type="text" class="form-control" id="editId" name="id" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editData">Data</label>
+                            <input type="date" class="form-control" id="editData" name="data" required>
+                        </div>
+
+                        <div class="form-group" style="display: flex; margin-bottom: 0px;">
+                            <div class="form-group">
+                                <label for="editVolume">Volume</label>
+                                <input type="number" class="form-control" id="editVolume" name="volume" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="editPosto">Bomba</label>
+                                <select class="form-control" id="editPosto" name="posto" required>
+                                    <option disabled selected value="">Selecione uma bomba de combustível</option>
+                                    <option value="BOMBA - PINDA 1">BOMBA - PINDA 1</option>
+                                    <option value="BOMBA - PINDA 2">BOMBA - PINDA 2</option>
+                                    {% for posto in postos_proprios if posto.posto != 'BOMBA - PINDA'%}
+                                        <option>{{ posto.posto }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display: flex; margin-bottom: 0px;">
+                            <div class="form-group" style="margin-right: 5px;">
+                                <label for="editOdometro">Odômetro</label>
+                                <input type="number" class="form-control" id="editOdometro" name="odometro">
+                            </div>
+
+                            <div class="form-group" id="div-preco" style="display: flex;">
+                                <label for="editPreco">Preço do Litro</label>
+                                <div class="input-preco">
+                                    <i>R$</i>
+                                    <input type="text" class="form-control preco" id="editPreco" name="preco" value="0,00" maxlength="5"
+                                           pattern="\d,\d{2}" onkeyup="setupPrecoInput(event, 'editPreco')" inputmode="numeric">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display: flex;">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="margin-right: 5px;">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal de exclusao -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" style="top: 50%;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Excluir Registros</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="deleteFormEntrega_Combustivel" method="post" class="delete" autocomplete="off">
+                        <div class="form-group hidden">
+                            <label for="deleteId">ID</label>
+                            <input type="text" class="form-control" id="deleteId" name="id" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Tem certeza que deseja excluir este registro?</label>
+                        </div>
+                        <div class="form-group" style="display: flex;">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="margin-right: 5px;">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Sim</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/datatables/pesquisar-entrega_combustivel.js') }}"></script>
+{% endblock %}

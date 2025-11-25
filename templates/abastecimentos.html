@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Abastecimentos
+{% endblock %}
+
+{% block content %}
+    {% include 'flash.html' %}
+    <div class="container">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <img src="{{ url_for('static', filename='images/bomba.png')}}" class="form-img" alt="bomba_de_combustivel"/>
+            <h1>Cadastro de abastecimento</h1>
+        </div>
+
+        <form method="post" id="abastecimentos" class="dados" autocomplete="off">
+            <div class="form-group">
+                <label for="data">Data</label>
+                <input type="date" class="form-control" id="data" name="data" required>
+            </div>
+
+            <div class="form-group">
+                <label for="motorista">Motorista</label>
+                <select id="motorista" name="motorista" class="form-control" required>
+                    <option value=""></option>
+                    {% for m in motoristas %}
+                        <option value="{{ m.motorista }}">{{ m.motorista }} | {{ m.cidade }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="placa">Placa</label>
+                <div class="input-group">
+                    <select id="placa" name="placa" class="form-control" onchange="setTimeout(validateLicensePlate('placa', 'quilometragem'), 300);" required>
+                        <option value=""></option>
+                        {% for placa in placas if placa.ativo %}
+                            <option value="{{ placa.placa }}">{{ placa.placa }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-group" style="width: 15%; margin-left: 5px; margin-bottom: 0;">
+                        <img src="{{ url_for('static', filename='images/qr-code.png')}}" id="icone-qr" alt="icone-qr" onclick="startQrScanner();"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group hidden" id="div-observacoes">
+                <div class="btn-container">
+                    <input type="radio" class="btn-check" id="btn-rg" name="operacao" value="BOMBA - RIBEIRÃO GRANDE" autocomplete="off"/>
+                    <label class="btn btn-secondary label-rg" for="btn-rg">
+                        Ribeirão Grande
+                    </label>
+                </div>
+                <div class="btn-container">
+                    <input type="radio" class="btn-check" id="btn-vn" name="operacao" value="" autocomplete="off"/>
+                    <label class="btn btn-secondary label-vn" for="btn-vn"
+                        style="margin-right: 5px;">
+                        Veículo Novo
+                    </label>
+
+                    <input type="radio" class="btn-check" id="btn-outros" name="operacao" value="" autocomplete="off"/>
+                    <label class="btn btn-secondary label-outros" for="btn-outros">
+                        Outros
+                    </label>
+                </div>
+
+                <label for="observacoes">Observações</label>
+                <input class="form-control" id="observacoes" name="observacoes">
+            </div>
+
+            <div class="form-group">
+                <label for="quilometragem">Quilometragem</label>
+                <input type="number" class="form-control" id="quilometragem" name="quilometragem" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cidade">Cidade</label>
+                <select name="cidade" id="cidade" class="form-control" required>
+                    <option disabled selected value="">Selecione a cidade do veículo</option>
+                    {% for cidade in cidades %}
+                        <option>{{ cidade.cidade }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="posto">Posto</label>
+                <select name="posto" id="posto" class="form-control" onchange="validateStationName()" required>
+                    <option disabled selected value="">Selecione um posto</option>
+                    <option disabled value="">---- Garagens ----</option>
+                    {% for posto in postos if 'BOMBA' in posto.posto %}
+                        <option value="{{ posto.posto }}">{{ posto.posto }}</option>
+                    {% endfor %}
+                    <option disabled value="">---- Terceiros ----</option>
+                    {% for posto in postos if 'BOMBA' not in posto.posto %}
+                        <option value="{{ posto.posto }}">{{ posto.posto }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="volume">Volume abastecido</label>
+                <input type="text" class="form-control" id="volume" name="volume" pattern="[\d,.]*" maxlength="8"
+                       inputmode="numeric" required>
+            </div>
+
+            <div class="form-group hidden" id="div-odometro">
+                <label for="odometro">Odômetro</label>
+                <input type="number" class="form-control" id="odometro" name="odometro">
+            </div>
+
+            <div class="form-group hidden" id="div-combustivel">
+                <label for="combustivel">Combustível</label>
+                <select name="combustivel" id="combustivel" class="form-control">
+                    <option disabled selected value="">Selecione o combustível</option>
+                    <option value="DIESEL S-10">DIESEL S-10</option>
+                    <option value="GASOLINA">GASOLINA</option>
+                    <option value="GASOLINA ADT">GASOLINA ADT</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="div-preco">
+                <label for="preco">Preço do Litro</label>
+                <div class="input-preco">
+                    <i>R$</i>
+                    <input type="text" class="form-control preco" id="preco" name="preco" value="0,00" maxlength="5"
+                           pattern="\d,\d{2}" onkeyup="setupPrecoInput(event)" inputmode="numeric">
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-danger btn-lg" id="limpar" onclick="confirmFormReset('abastecimentos')">Limpar</button>
+                <button type="submit" class="btn btn-success btn-lg" id="enviar-btn" style="margin-left: 5px;">Enviar</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        // configura campo de input para motorista e placa, exibindo opções filtradas
+        $(document).ready(function() {
+            $('#motorista').select2({
+                theme: 'bootstrap4',
+                placeholder: 'Digite para buscar...',
+                width: '100%',
+
+                escapeMarkup: m => m,
+
+                templateResult: data => {
+                    if (!data.id) return data.text;
+                    const [nome, cidade] = data.text.split(' | ');
+                    return `<span>${nome}<strong> | ${cidade}</strong></span>`;
+                },
+
+                templateSelection: data => {
+                    if (!data.id) return data.text;
+                    const [nome, cidade] = data.text.split(' | ');
+                    return `<span>${nome}</span>`;
+                }
+            });
+
+            $('#placa').select2({
+                theme: 'bootstrap4',
+                placeholder: 'Digite para buscar...',
+                width: '80%',
+
+                matcher: function(params, data) {
+                    if (!params.term || params.term.trim() === '') {
+                        return data;
+                    }
+
+                    // ignora hifens
+                    const termo = params.term.replace(/-/g, '').toUpperCase();
+                    const texto = data.text.replace(/-/g, '').toUpperCase();
+
+                    return texto.indexOf(termo) > -1 ? data : null;
+                }
+            });
+
+            $('#motorista').on('select2:open', function(){
+                let $search = $('.select2-search__field');
+                $search.off('input.uppercase').on('input.uppercase', function(){
+                    this.value = this.value.toUpperCase();
+                });
+            });
+        });
+    </script>
+{% endblock %}

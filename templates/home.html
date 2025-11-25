@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Posto Antunes
+{% endblock %}
+
+{% block content %}
+    {% include 'flash.html' %}
+    <div class="container" style="padding: 10px;">
+        <div class="div-menu">
+            <p class="texts" id="welcome-message">{{ current_user.username|upper }}!</p>
+            <p class="texts">Selecione abaixo a opção desejada:</p>
+
+            <div class="div-submenu" style="margin-right: 5px;">
+                <a href="{{ url_for('views.abastecimentos')}}" class="div-menu-item">
+                    <img src="{{ url_for('static', filename='images/bomba.png')}}" style="max-width: 80%; height: auto;  margin-bottom: 10px;" alt="logo_bomba" />
+                    <p class="div-submenu-text">Novo <br>abastecimento</p>
+                </a>
+            </div>
+
+            <div class="div-submenu">
+                <a href="{{ url_for('views.entrega_combustivel')}}" class="div-menu-item">
+                    <img src="{{ url_for('static', filename='images/caminhao.png')}}" style="max-width: 80%; height: auto; margin-bottom: 10px;" alt="logo_caminhao" />
+                    <p class="div-submenu-text">Entrega <br>de combustível</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // registra o service worker na pagina inicial
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then((registration) => {
+                    console.log('Service Worker registrado com sucesso:', registration);
+                })
+                .catch((error) => {
+                    console.error('Erro ao registrar o Service Worker:', error);
+                });
+        }
+    </script>
+{% endblock %}

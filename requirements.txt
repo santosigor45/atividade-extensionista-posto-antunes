@@ -1,0 +1,41 @@
+# requirements.txt para o Posto Antunes
+# Use 'pip install -r requirements.txt' para instalar as dependências
+
+# Framework Principal
+Flask==3.0.0
+
+# Extensões do Flask
+Flask-Admin==1.6.1
+Flask-Login==0.6.3
+Flask-Migrate==4.1.0
+Flask-SQLAlchemy==3.1.1
+
+# ORM e Migrações de Banco de Dados
+SQLAlchemy==2.0.37  # >=2.0.36 corrige compatibilidade com Python 3.13
+alembic==1.14.0
+# greenlet 3.0.3 não possui wheel para Python 3.13; 3.1.x é compatível
+greenlet>=3.1.1,<3.2
+
+# Conectores de Banco de Dados
+mysql-connector-python>=9.1.0
+mysqlclient==2.2.4
+PyMySQL>=1.1.1
+
+# Ferramentas de Deploy
+gunicorn>=22.0.0
+
+# Templates
+Jinja2>=3.1.5
+Mako==1.3.8
+MarkupSafe==2.1.3
+
+# Utilitários
+blinker==1.7.0
+click==8.1.7
+colorama==0.4.6
+itsdangerous==2.1.2
+packaging==24.0
+protobuf==4.25.8
+typing_extensions>=4.12.2
+Werkzeug>=3.0.6
+WTForms==3.1.2

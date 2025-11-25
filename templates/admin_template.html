@@ -1,0 +1,6 @@
+{% extends 'admin/base.html' %}
+
+{% block menu_links %}
+    <a href="{{ url_for('views.home') }}" class="btn btn-primary" style="float: right; margin-top: 7px">Retornar à Página Principal</a>
+    {{ super() }}
+{% endblock %}

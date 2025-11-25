@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Pesquisar
+{% endblock %}
+
+{% block content %}
+    {% include 'flash.html' %}
+    <div class="container" style="width: 50%;">
+        <div class="div-menu">
+            <p class="texts">Selecione os dados que deseja visualizar:</p>
+
+            <div class="btn-container">
+                <input type="radio" class="btn-check" id="btn-registros" name="table-select" autocomplete="off"/>
+                <label class="btn btn-secondary label-registros" for="btn-registros" style="margin-right: 5px;"
+                       onclick="window.location = '{{ url_for('views.pesquisar_tables', table='abastecimentos')}}';">
+                    Registros
+                </label>
+
+                <input type="radio" class="btn-check" id="btn-cadastros" name="table-select" autocomplete="off"/>
+                <label class="btn btn-secondary label-cadastros" for="btn-cadastros"
+                       style="display: flex; margin-right: 5px;"
+                       onclick="window.location = '{{ url_for('views.pesquisar_tables', table='motoristas')}}';">
+                    <span style="margin: auto;">
+                        Cadastros
+                    </span>
+                </label>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Entrega de combustível
+{% endblock %}
+
+{% block content %}
+    {% include 'flash.html' %}
+    <div class="container">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <img src="{{ url_for('static', filename='images/caminhao.png')}}" class="form-img" alt="caminhao_tanque" />
+            <h1>Entrega de combustível</h1>
+        </div>
+
+        <form method="post" id="entrega_combustivel" class="dados" autocomplete="off">
+            <div class="form-group">
+                <label for="data">Data</label>
+                <input type="date" class="form-control" id="data" name="data" required>
+            </div>
+
+            <div class="form-group">
+                <label for="volume">Volume entregue</label>
+                <input type="number" class="form-control" id="volume" name="volume" required>
+            </div>
+
+            <div class="form-group">
+                <label for="posto">Bomba</label>
+                <select name="posto" id="posto" class="form-control" required>
+                    <option disabled selected value="">Selecione uma bomba de combustível</option>
+                    {% for posto in postos_proprios %}
+                        <option>{{ posto.posto }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="odometro">Odômetro</label>
+                <input type="number" class="form-control" id="odometro" name="odometro" required>
+            </div>
+
+            <div class="form-group" id="div-preco" style="display: flex;">
+                <label for="preco">Preço do Litro</label>
+                <div class="input-preco">
+                    <i>R$</i>
+                    <input type="text" class="form-control preco" id="preco" name="preco" value="0,00" maxlength="5"
+                           pattern="^(?!0,00$)\d,\d{2}$" onkeyup="setupPrecoInput(event)" inputmode="numeric" required>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-danger btn-lg" id="limpar" onclick="confirmFormReset('entrega_combustivel')">Limpar</button>
+                <button type="submit" class="btn btn-success btn-lg" id="enviar-btn" style="margin-left: 5px;">Enviar</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

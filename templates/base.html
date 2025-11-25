@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous">
+    <!-- CSS do Select2 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+        rel="stylesheet"
+    />
+    <!-- Tema Bootstrap4 para Select2 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css"
+        rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="manifest" href="/static/manifest.json">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #191745;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/home" style="display: flex;">
+                <img src="{{ url_for('static', filename='images/logo_text.png')}}" class="logo-text" alt="Logo" />
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item abastecimentos" role="presentation">
+                        <a class="nav-link" aria-current="page" href="{{ url_for('views.abastecimentos')}}">&bull; Abastecimentos</a>
+                    </li>
+                    <li class="nav-item entrega_combustivel" role="presentation">
+                        <a class="nav-link" aria-current="page" href="{{ url_for('views.entrega_combustivel')}}">&bull; Entrega de combustível</a>
+                    </li>
+                    <li class="nav-item pesquisar" role="presentation">
+                        <a class="nav-link" aria-current="page" href="{{ url_for('views.pesquisar')}}">&bull; Pesquisar</a>
+                    </li>
+                    {% if current_user.is_manager is true %}
+                        <li class="nav-item graficos" role="presentation">
+                            <a class="nav-link" aria-current="page" href="{{ url_for('views.graficos')}}">&bull; Graficos</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item btn-logout" role="presentation">
+                        <a class="nav-link" id="username-link">
+                            {% if current_user.is_admin is true %}
+                                Admin - {{ current_user.username|upper }}
+                            {% else %}
+                                {{ current_user.username|upper }}
+                            {% endif %}
+                            <img src="{{ url_for('static', filename='icons/user.svg')}}" class="user-icon" alt="user_icon"/>
+                        </a>
+                        <a class="nav-link" href="{{ url_for('views.logout')}}" onclick="logout()" style="display: inline">
+                            Sair
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="modal fade" id="readerModal" tabindex="-1" aria-labelledby="readerModalLabel" aria-hidden="true" style="top: 50%; z-index: 2500;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="readerModalLabel">Ler QR-Code</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body position-relative">
+                    <video id="reader" playsinline style="width: 100%; height: 300px; background: #000; object-fit: cover;"></video>
+                    <div id="qrSuccessOverlay">
+                      <img src="{{ url_for('static', filename='images/logo.png')}}" class="logo" alt="Logo" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="globalLoadingOverlay" class="loading-overlay">
+      <div class="loader"></div>
+    </div>
+    {% block content %}{% endblock %}
+
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+            crossorigin="anonymous"></script>
+
+    <!-- JS do Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/2.1.7/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.1.2/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/pt-br.min.js"></script>
+
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.24/sorting/datetime-moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/pt-br.min.js"></script>
+
+    <!-- Qr-scanner -->
+    <script src="https://unpkg.com/qr-scanner/qr-scanner.umd.min.js"></script>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script>
+        // carrega grupos de permissao
+        let isAdmin = {{ current_user.is_admin | tojson }};
+        let isManager = {{ current_user.is_manager | tojson }};
+        let isEditor = {{ current_user.is_editor | tojson }};
+
+        // ajusta o comportamento do toggler
+        toggler = document.querySelector('.navbar-toggler');
+        toggler.addEventListener('blur', function() {
+            setTimeout(function() {
+                if (!toggler.classList.contains('collapsed')) {
+                    toggler.click();
+                };
+            }, 150);
+        });
+
+        // carrega o menu admin
+        if (isAdmin) {
+            $('#username-link').attr('href', '/admin');
+        };
+
+        // destaca o item do navbar correspondente a URL atual
+        let currentUrl = window.location.href;
+        $(".navbar-nav .nav-link").each(function () {
+            if (currentUrl.includes(this.href)) {
+                $(this).addClass("active");
+            }
+        });
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

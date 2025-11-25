@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Pesquisar - Abastecimentos
+{% endblock %}
+
+{% block content %}
+    {% include 'flash.html' %}
+    <div class="container" style="width: 100%; max-width: 10000px;">
+        <div class="div-menu">
+
+            <div class="btn-container">
+                <input type="radio" class="btn-check" id="btn-abastecimentos" name="table-select" autocomplete="off" checked/>
+                <label class="btn btn-secondary label-abastecimentos" for="btn-abastecimentos" style="display: flex; margin-right: 5px;" onclick="window.location = '{{ url_for('views.pesquisar_tables', table='abastecimentos')}}';">
+                    <span style="margin: auto;">
+                        Abastecimentos
+                    </span>
+                </label>
+                <input type="radio" class="btn-check" id="btn-entrega_combustivel" name="table-select" autocomplete="off"/>
+                <label class="btn btn-secondary label-entrega_combustivel" for="btn-entrega_combustivel" style="display: flex; margin-right: 5px;" onclick="window.location = '{{ url_for('views.pesquisar_tables', table='entrega_combustivel')}}';">
+                    <span style="margin: auto;">
+                        Entregas
+                    </span>
+                </label>
+            </div>
+
+            <div class="input-group mb-3 div-date">
+                <span class="input-group-text">De</span>
+                <input type="date" class="form-control" id="start" autocomplete="off">
+                <span class="input-group-text">até</span>
+                <input type="date" class="form-control" id="stop" autocomplete="off">
+            </div>
+
+            <div class="div-table" id="div-table-abastecimentos">
+                <div class="input-group mb-3 div-date">
+                    <button class="btn btn-outline-primary" id="report-button">Imprimir</button>
+                </div>
+
+                <table id="table-abastecimentos" border="1">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Ações</th>
+                            <th>Data</th>
+                            <th>Responsável</th>
+                            <th>Motorista</th>
+                            <th>Placa</th>
+                            <th>Observações</th>
+                            <th>KM</th>
+                            <th>Volume</th>
+                            <th>Cidade</th>
+                            <th>Posto</th>
+                            <th>Odômetro</th>
+                            <th>Combustível</th>
+                            <th>Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal de edicao -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true" style="top: 50%;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Registros</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="editFormAbastecimentos" method="post" class="edit" autocomplete="off">
+
+                        <div class="form-group hidden">
+                            <label for="editId">ID</label>
+                            <input type="text" class="form-control" id="editId" name="id" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editData">Data</label>
+                            <input type="date" class="form-control" id="editData" name="data" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editMotorista">Motorista</label>
+                            <select id="editMotorista" class="form-control" name="motorista" required>
+                                {% for m in motoristas %}
+                                    <option value="{{ m.motorista }}">{{ m.motorista }} | {{ m.cidade }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="display: flex; margin-bottom: 0px;">
+                            <div class="form-group">
+                                <label for="editPlaca">Placa</label>
+                                <select id="editPlaca" class="form-control" name="placa" onchange="setTimeout(validateLicensePlate('editPlaca', 'editQuilometragem'), 300);" required>
+                                    {% for placa in placas %}
+                                        <option value="{{ placa.placa }}">{{ placa.placa }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group hidden" id="div-observacoes">
+                            <div class="btn-container">
+                                <input type="radio" class="btn-check" id="btn-rg" name="operacao" value="BOMBA - RIBEIRÃO GRANDE" autocomplete="off"/>
+                                <label class="btn btn-secondary label-rg" for="btn-rg">
+                                    Ribeirão Grande
+                                </label>
+                            </div>
+                            <div class="btn-container">
+                                <input type="radio" class="btn-check" id="btn-vn" name="operacao" value="" autocomplete="off"/>
+                                <label class="btn btn-secondary label-vn" for="btn-vn"
+                                    style="margin-right: 5px;">
+                                    Veículo Novo
+                                </label>
+
+                                <input type="radio" class="btn-check" id="btn-outros" name="operacao" value="" autocomplete="off"/>
+                                <label class="btn btn-secondary label-outros" for="btn-outros">
+                                    Outros
+                                </label>
+                            </div>
+
+                            <label for="editObservacoes">Observações</label>
+                            <input type="text" class="form-control" id="editObservacoes" name="observacoes" autocomplete="off">
+                        </div>
+
+                        <div class="form-group" style="display: flex; margin-bottom: 0px;">
+                            <div class="form-group" style="margin-right: 5px;">
+                                <label for="editQuilometragem">KM</label>
+                                <input type="number" class="form-control" id="editQuilometragem" name="quilometragem" autocomplete="off">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editVolume">Volume</label>
+                                <input type="number" class="form-control" id="editVolume" name="volume" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display: flex; margin-bottom: 0px;">
+                            <div class="form-group" style="margin-right: 5px;">
+                                <label for="editCidade">Cidade</label>
+                                <select name="cidade" id="editCidade" class="form-control" required>
+                                    <option disabled selected value="">Selecione a cidade do veículo</option>
+                                    {% for cidade in cidades %}
+                                        <option>{{ cidade.cidade }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editPosto">Posto</label>
+                                <select class="form-control" id="editPosto" name="posto" required>
+                                    <option disabled value="">Selecione um posto</option>
+                                    <option disabled value="">---- Garagens ----</option>
+                                    {% for posto in postos if 'BOMBA' in posto.posto %}
+                                        <option value="{{ posto.posto }}">{{ posto.posto }}</option>
+                                    {% endfor %}
+                                    <option disabled value="">---- Terceiros ----</option>
+                                    {% for posto in postos if 'BOMBA' not in posto.posto %}
+                                        <option value="{{ posto.posto }}">{{ posto.posto }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display: flex; margin-bottom: 0px;">
+                            <div class="form-group" style="margin-right: 5px;">
+                                <label for="editOdometro">Odômetro</label>
+                                <input type="number" class="form-control" id="editOdometro" name="odometro">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editCombustivel">Combustível</label>
+                                <select name="combustivel" id="editCombustivel" class="form-control">
+                                    <option disabled selected value="">Selecione o combustível</option>
+                                    <option value="DIESEL S-10">DIESEL S-10</option>
+                                    <option value="GASOLINA">GASOLINA</option>
+                                    <option value="GASOLINA ADT">GASOLINA ADT</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="div-preco" style="display: flex;">
+                            <label for="editPreco">Preço do Litro</label>
+                            <div class="input-preco">
+                                <i>R$</i>
+                                <input type="text" class="form-control preco" id="editPreco" name="preco" value="0,00" maxlength="5"
+                                       pattern="\d,\d{2}" onkeyup="setupPrecoInput(event, 'editPreco')" inputmode="numeric">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display: flex;">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="margin-right: 5px;">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal de exclusao -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" style="top: 50%;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Excluir Registros</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="deleteFormAbastecimentos" method="post" class="delete" autocomplete="off">
+                        <div class="form-group hidden">
+                            <label for="deleteId">ID</label>
+                            <input type="text" class="form-control" id="deleteId" name="id" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Tem certeza que deseja excluir este registro?</label>
+                        </div>
+                        <div class="form-group" style="display: flex;">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="margin-right: 5px;">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Sim</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/datatables/pesquisar-abastecimentos.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            const $modal = $('#editModal');
+
+            // motorista
+            $('#editMotorista').select2({
+                theme: 'bootstrap4',
+                placeholder: 'Digite para buscar...',
+                width: '100%',
+                dropdownParent: $modal,
+
+                escapeMarkup: m => m,
+
+                templateResult: data => {
+                    if (!data.id) return data.text;
+                    const [nome, cidade] = data.text.split(' | ');
+                    return `<span>${nome}<strong> | ${cidade}</strong></span>`;
+                },
+
+                templateSelection: data => {
+                    if (!data.id) return data.text;
+                    const [nome/*, cidade*/] = data.text.split(' | ');
+                    return `<span>${nome}</span>`;
+                }
+            });
+
+            // formata para tudo maiuscula
+            $('#editMotorista').on('select2:open', function(){
+                let $search = $('.select2-search__field');
+                $search.off('input.uppercase').on('input.uppercase', function(){
+                    this.value = this.value.toUpperCase();
+                });
+            });
+
+            // placa
+            $('#editPlaca').select2({
+                theme: 'bootstrap4',
+                placeholder: 'Digite para buscar...',
+                width: '100%',
+                dropdownParent: $modal,
+
+                // ignora hifens
+                matcher: function(params, data) {
+                    if (!params.term || params.term.trim() === '') {
+                        return data;
+                    }
+
+                    const termo = params.term.replace(/-/g, '').toUpperCase();
+                    const texto = data.text.replace(/-/g, '').toUpperCase();
+
+                    if (texto.indexOf(termo) > -1) {
+                        return data;
+                    }
+                    return null;
+                }
+            });
+        });
+    </script>
+{% endblock %}

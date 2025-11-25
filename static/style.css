@@ -1,0 +1,557 @@
+/* =========================================
+   Estilos Gerais
+========================================= */
+body {
+    background-color: #191745;
+}
+
+h1 {
+    font-family: "Inconsolata", monospace;
+    font-weight: 900;
+    text-align: left;
+}
+
+label {
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+p {
+    margin: 0px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* =========================================
+   Containers
+========================================= */
+.container {
+    background-color: #ffffff;
+    padding: 20px;
+    width: 500px;
+    margin: 95px auto 20px auto;
+    border: 1px solid #000;
+    border-radius: 10px;
+}
+
+.container-fluid {
+    overflow-y: auto;
+}
+
+.login-container {
+    background-color: #191745;
+    border: none;
+    margin-bottom: 0;
+}
+
+/* =========================================
+   Imagens
+========================================= */
+.logo {
+    max-width: 100%;
+    height: auto;
+}
+
+.logo-text {
+    max-width: 200px;
+    height: auto;
+}
+
+.form-img {
+    max-width: 30%;
+    height: auto;
+    margin-right: 20px;
+    margin-left: -10px;
+}
+
+.user-icon {
+    height: 30px;
+    width: auto;
+    margin-right: 20px;
+}
+
+/* =========================================
+   Navegação
+========================================= */
+.navbar {
+    border-bottom: 3px solid #fff000;
+    font-size: 120%;
+    font-weight: 900;
+}
+
+.navbar-nav {
+    margin-top: 0.5rem;
+}
+
+.navbar-toggler {
+    margin-left: auto;
+}
+
+.nav-item {
+    white-space: nowrap;
+}
+
+.nav-link {
+    white-space: nowrap;
+    font-family: "Inconsolata", monospace;
+    margin-right: 30px;
+}
+
+#username-link {
+    padding: 0px;
+    margin-right: 0px;
+    color: white;
+    display: inline;
+    user-select: none;
+}
+
+/* =========================================
+   Buttons
+========================================= */
+.btn {
+    margin: 0;
+    width: 50%;
+    display: inline-block;
+}
+
+.btn-secondary {
+    font-weight: 500;
+    font-size: 15pt;
+}
+
+.btn-container {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.btn-logout {
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-left: auto;
+}
+
+.btn-edit {
+    width: 25pt;
+    cursor: pointer;
+}
+
+.btn-disabled {
+    cursor: default;
+    cursor: default;
+    filter: grayscale(1);
+}
+
+.div-cadastrar {
+    margin: auto;
+}
+
+#btn-registros:checked ~ .label-registros,
+#btn-cadastros:checked ~ .label-cadastros,
+#btn-placas:checked ~ .label-placas,
+#btn-motoristas:checked ~ .label-motoristas,
+#btn-abastecimentos:checked ~ .label-abastecimentos,
+#btn-entrega_combustivel:checked ~ .label-entrega_combustivel,
+#btn-rg:checked ~ .label-rg,
+#btn-vn:checked ~ .label-vn,
+#btn-outros:checked ~ .label-outros {
+    background-color: #0069D9;
+}
+
+/* =========================================
+   Forms
+========================================= */
+.form-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.div-date {
+    width: 400px;
+}
+
+.dt-length, .dt-info {
+    text-align: left;
+}
+
+.dt-search {
+    text-align: right;
+}
+
+/* =========================================
+   Menus e Submenus
+========================================= */
+.div-menu {
+    text-align: center;
+}
+
+.div-submenu {
+    display: inline-block;
+    width: 48%;
+    border: 2px solid #000000;
+    border-radius: 15px;
+    padding-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.div-submenu-text {
+    margin-bottom: 10px;
+}
+
+.div-submenu:active {
+    background-color: #cccccc;
+}
+
+.div-menu-item {
+    font-family: "Inconsolata", monospace;
+    color: #000000;
+    font-weight: 900;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+/* =========================================
+   Dynamic Options
+========================================= */
+.dynamic-options {
+    position: absolute;
+    display: none;
+    text-align: left;
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.dynamic-options.show {
+    display: block;
+    background: white;
+}
+
+.dynamic-option {
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+/* =========================================
+   Tables
+========================================= */
+table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.div-table {
+    text-align: center;
+    display: inline-block;
+    margin-top: 0px !important;
+    margin: 30px 5px;
+    max-width: 100%;
+}
+
+th {
+    background-color: gray;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+.row {
+    overflow-y: auto;
+}
+
+.scrollable-table {
+    text-align: center;
+    display: inline-block;
+    overflow-x: auto;
+    margin: 30px auto;
+    max-width: 100%;
+}
+
+#table-placas tr.row-disabled td:not(.actions-cell) {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+#table-placas tr.row-disabled td.actions-cell {
+    opacity: 1;
+    pointer-events: auto;
+}
+#table-placas tr.row-disabled td.actions-cell img {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* =========================================
+   Modals
+========================================= */
+.modal {
+    display: none;
+    position: fixed;
+    align-items: center;
+    justify-content: center;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease-out;
+    z-index: 2000;
+}
+
+.modal-header h5 {
+    font-weight: 600;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    text-align: center;
+    border-radius: 10px;
+    border: 1px solid #000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-body {
+    font-family: "Monaco", monospace;
+}
+
+.fade-out {
+    opacity: 0;
+}
+
+/* =========================================
+   Flashs
+========================================= */
+.flash-error {
+    background-color: #fab3ba;
+}
+
+.flash-text-error {
+    color: #73000b;
+}
+
+.flash-info {
+    background-color: #ffdc71;
+}
+
+.flash-text-info {
+    color: #694f00;
+}
+
+.flash-success {
+    background-color: #b6d7a8;
+}
+
+.flash-text-success {
+    color: #184600;
+}
+
+/* =========================================
+   Textos
+========================================= */
+#welcome-message {
+    font-weight: 900;
+    padding-top: 10px;
+}
+
+.texts {
+    font-family: "Inconsolata", monospace;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+/* =========================================
+   Inputs de Preço
+========================================= */
+#div-preco {
+    flex-direction: column;
+}
+
+.input-preco {
+    position: relative;
+    display: inline-block;
+}
+
+.input-preco > i {
+    position: absolute;
+    display: block;
+    transform: translate(0, -50%);
+    top: 50%;
+    pointer-events: none;
+    width: 25px;
+    text-align: center;
+    font-style: normal;
+}
+
+.preco {
+    padding-left: 25px;
+    padding-right: 0px;
+}
+
+/* =========================================
+   QR Code
+========================================= */
+
+#qrSuccessOverlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 5rem;
+    color: #4caf50;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1000;
+    transition: transform 0.7s ease, opacity 0.3s ease;
+}
+
+#qrSuccessOverlay.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+#icone-qr {
+    max-width: 100%;
+    cursor: pointer;
+    width: 60%;
+}
+
+/* =========================================
+   Loading Element
+========================================= */
+
+.loading-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loader {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* =========================================
+   Estilos Responsivos
+========================================= */
+
+@media (max-width: 1400px) {
+    th, td {
+        padding: 5px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 991px) {
+    #table-abastecimentos, #table-entrega_combustivel {
+        width: 250% !important;
+    }
+}
+
+@media (max-width: 567px) {
+    #table-abastecimentos {
+        width: 400% !important;
+    }
+
+    #table-entrega_combustivel {
+        width: 250% !important;
+    }
+
+    .label-abastecimentos, .label-entrega_combustivel {
+        height: 50px;
+        font-size: 4vw;
+    }
+
+    .div-menu-item {
+        font-size: 3.7vw;
+    }
+
+    .nav-link {
+        margin-bottom: 10px;
+    }
+
+    .logout {
+        margin-top: 5px;
+    }
+
+    .messages {
+        font-size: 5vw;
+    }
+
+    .container {
+        width: 95% !important;
+    }
+
+    .scrollable-table {
+        overflow-x: auto;
+        margin: 20px auto;
+    }
+
+    #table-placas {
+        width: 230% !important;
+    }
+
+    #table-motoristas {
+        width: 180% !important;
+    }
+
+    .div-table {
+        margin: 20px auto;
+    }
+
+    .div-date {
+        width: 100%;
+    }
+
+    #div-qrcode {
+        width: 40% !important;
+    }
+
+    #icone-qr {
+        width: 80% !important;
+    }
+
+    th, td {
+        padding: 5px;
+        font-size: 12px;
+    }
+
+    .dt-length, .dt-info, .dt-search {
+        text-align: left;
+    }
+}

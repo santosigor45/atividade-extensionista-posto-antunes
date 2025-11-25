@@ -1,0 +1,26 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% set category, message = messages[0] %}
+        <div class="modal fade flashes-modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content flash-{{ category }}">
+                    <div class="modal-body">
+                        <div class="flashes flash-text-{{ category }}">
+                            <p>{{ message }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endwith %}
+
+<div class="modal fade" id="jsModal" tabindex="-1" role="dialog" aria-labelledby="jsModalLabel" style="z-index: 2600;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content " id="js-flash-content">
+            <div class="modal-body">
+                <div class="flashes " id="js-flash-text"></div>
+            </div>
+        </div>
+    </div>
+</div>
