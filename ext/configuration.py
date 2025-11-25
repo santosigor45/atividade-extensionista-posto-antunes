@@ -10,9 +10,9 @@ except ImportError:
 
 # carrega variaveis de ambiente
 def init_app(app):
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or os.urandom(24).hex()
     app.config['PERMANENT_SESSION_LIFETIME'] = int(
-        os.environ.get('PERMANENT_SESSION_LIFETIME')
+        os.environ.get('PERMANENT_SESSION_LIFETIME', 86400)
     )
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('MYSQL_URL')
 
